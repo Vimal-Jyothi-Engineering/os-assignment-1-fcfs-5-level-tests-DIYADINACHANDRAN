@@ -13,13 +13,15 @@ int main() {
     int pid[100], at[100], bt[100];
     int wt[100], tat[100];
     int original_index[100];
+    int original_pid[100];   // Store original PID
 
     for (int i = 0; i < n; i++) {
         scanf("%d %d %d", &pid[i], &at[i], &bt[i]);
-        original_index[i] = i;   // store original position
+        original_index[i] = i;
+        original_pid[i] = pid[i];   // Save original PID
     }
 
-    // Sort by arrival time (stable)
+    // Sort by arrival time
     for (int i = 0; i < n - 1; i++) {
         for (int j = 0; j < n - i - 1; j++) {
             if (at[j] > at[j + 1] ||
@@ -30,14 +32,15 @@ int main() {
                 t = at[j]; at[j] = at[j+1]; at[j+1] = t;
                 t = bt[j]; bt[j] = bt[j+1]; bt[j+1] = t;
                 t = pid[j]; pid[j] = pid[j+1]; pid[j+1] = t;
-                t = original_index[j]; 
-                original_index[j] = original_index[j+1]; 
+                t = original_index[j];
+                original_index[j] = original_index[j+1];
                 original_index[j+1] = t;
             }
         }
     }
 
     int cur = 0;
+
     for (int i = 0; i < n; i++) {
         if (cur < at[i])
             cur = at[i];
@@ -47,7 +50,6 @@ int main() {
         cur += bt[i];
     }
 
-    // Reorder results to original input order
     int final_wt[100], final_tat[100];
 
     for (int i = 0; i < n; i++) {
@@ -56,6 +58,7 @@ int main() {
     }
 
     double avgWT = 0, avgTAT = 0;
+
     for (int i = 0; i < n; i++) {
         avgWT += final_wt[i];
         avgTAT += final_tat[i];
@@ -66,11 +69,11 @@ int main() {
 
     printf("Waiting Time:\n");
     for (int i = 0; i < n; i++)
-        printf("P%d %d\n", pid[i], final_wt[i]);
+        printf("P%d %d\n", original_pid[i], final_wt[i]);
 
     printf("Turnaround Time:\n");
     for (int i = 0; i < n; i++)
-        printf("P%d %d\n", pid[i], final_tat[i]);
+        printf("P%d %d\n", original_pid[i], final_tat[i]);
 
     printf("Average Waiting Time: %.2f\n", avgWT);
     printf("Average Turnaround Time: %.2f\n", avgTAT);
